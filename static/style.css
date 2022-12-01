@@ -1,0 +1,40 @@
+* {
+    color: white;
+}
+
+body, html{
+    background: #0f0f23;
+}
+
+span {
+    text-align: right;
+}
+
+td, th {
+    text-align: center;
+}
+
+th:first-child, td:first-child{
+    text-align: left;
+}
+
+th {
+    font-size: 16px
+}
+table {
+    margin: auto;
+}
+
+.star{
+    font-size:24px;
+    color: #333;
+    cursor: pointer;
+}
+
+.gold{
+    color: #ff6;
+}
+
+.silver{
+    color: #ddd;
+}
