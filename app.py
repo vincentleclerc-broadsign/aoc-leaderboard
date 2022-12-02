@@ -49,19 +49,15 @@ class Member:
         has_same_number_of_stars = self.stars == other.stars
         has_same_number_of_gold_stars = self.number_of_gold_stars == other.number_of_gold_stars
         has_same_sum_of_gold_stars = self.sum_gold_stars == other.sum_gold_stars
-        if has_same_number_of_stars:
-            if has_same_number_of_gold_stars:
-                if has_same_sum_of_gold_stars:
-                    return self.total_time == other.total_time
-                return has_same_sum_of_gold_stars
-            return has_same_number_of_gold_stars
-        return has_same_number_of_stars
+        if has_same_number_of_stars and has_same_number_of_gold_stars and has_same_sum_of_gold_stars:
+            return self.total_time == other.total_time
+        return False
 
     def __lt__(self, other: Self) -> bool:
         if self.stars == other.stars:
             if self.number_of_gold_stars == other.number_of_gold_stars:
                 if self.sum_gold_stars == other.sum_gold_stars:
-                    return self.total_time < other.total_time
+                    return self.total_time > other.total_time
                 return self.sum_gold_stars < other.sum_gold_stars
             return self.number_of_gold_stars < other.number_of_gold_stars
         return self.stars < other.stars
@@ -107,13 +103,15 @@ def split_timestamp(timestamp: int | float) -> tuple:
     return days, hours, minutes, seconds, milliseconds
 
 
-def determine_postions(members: List[Member]) -> None:
-    members[0].position = 1
-    for i, member in enumerate(members[1:]):
+def determine_positions(members: List[Member]) -> None:
+    for i, member in enumerate(members):
+        if i == 0:
+            member.position = 1
+            continue
         if member == members[i - 1]:
-            member.position = members[i - 1]
+            member.position = members[i - 1].position
         else:
-            member.position = i + 2
+            member.position = i + 1
 
 
 def populate_members(data: dict) -> List[Member]:
@@ -138,7 +136,7 @@ def populate_members(data: dict) -> List[Member]:
     members.sort(reverse=True)
 
     if members:
-        determine_postions(members)
+        determine_positions(members)
 
     return members
 
