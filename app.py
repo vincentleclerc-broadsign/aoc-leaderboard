@@ -12,7 +12,7 @@ from flask import Flask, render_template, send_from_directory, request
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 BOARDS = {2020: 642101, 2021: 642101, 2022: 1505617}
-SESSION_COOKIE = os.getenv("SESSION_COOKIE")
+SESSION_COOKIE = json.loads(os.getenv("SESSION_COOKIE"))
 CACHE_FOLDER = "cache"
 logger = logging.getLogger(__name__)
 
