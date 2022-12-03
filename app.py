@@ -12,7 +12,6 @@ from flask import Flask, render_template, send_from_directory, request
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 BOARDS = {2020: 642101, 2021: 642101, 2022: 1505617}
-SESSION_COOKIE = json.loads(os.getenv("SESSION_COOKIE"))
 CACHE_FOLDER = "cache"
 logger = logging.getLogger(__name__)
 
@@ -44,7 +43,6 @@ class Member:
     results: List[Result] = field(default_factory=list)
     position: int = 0
     name: str = None
-
 
     def __eq__(self, other: Self) -> bool:
         has_same_number_of_stars = self.stars == other.stars
@@ -155,15 +153,26 @@ def use_cached_json(year: int) -> Optional[dict]:
     return
 
 
+def get_session_cookie() -> dict:
+    with open("etc/config.json") as f:
+        config_file = f.read()
+        config = json.loads(config_file)
+        print(config_file)
+        print(config)
+        return config["session_cookie"]
+
+
 def fetch_json(year: int) -> dict:
     cached_data = use_cached_json(year)
     if cached_data:
         logger.info("Using cached data.")
         return cached_data
 
+    session_cookie = get_session_cookie()
+
     logging.info("Retrieving data for adventofcode.com")
     url = f"https://adventofcode.com/{year}/leaderboard/private/view/{BOARDS[year]}.json"
-    response = requests.get(url=url, cookies=SESSION_COOKIE)
+    response = requests.get(url=url, cookies=session_cookie)
     response.raise_for_status()
 
     if response.headers["Content-Type"] != "application/json":
