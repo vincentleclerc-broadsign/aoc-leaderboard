@@ -40,10 +40,11 @@ class Result:
 @dataclass(order=False)
 class Member:
     id: int
-    name: str
     stars: int
     results: List[Result] = field(default_factory=list)
     position: int = 0
+    name: str = None
+
 
     def __eq__(self, other: Self) -> bool:
         has_same_number_of_stars = self.stars == other.stars
@@ -128,7 +129,7 @@ def populate_members(data: dict) -> List[Member]:
 
         members.append(Member(
             id=member["id"],
-            name=member["name"],
+            name=member["name"] or f"User #{member['id']}",
             stars=member["stars"],
             results=sorted(results)
         ))
