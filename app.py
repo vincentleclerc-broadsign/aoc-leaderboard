@@ -157,8 +157,6 @@ def get_session_cookie() -> dict:
     with open("etc/config.json") as f:
         config_file = f.read()
         config = json.loads(config_file)
-        print(config_file)
-        print(config)
         return config["session_cookie"]
 
 
