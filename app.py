@@ -66,7 +66,7 @@ class Member:
         return sum([result.delta for result in self.results if result.gold_ts])
 
     def get_number_of_participating_days(self) -> int:
-        return len([1 for result in self.results if result.silver_ts])
+        return len([1 for result in self.results if result.gold_ts])
 
     @property
     def average_time(self) -> float:
