@@ -11,13 +11,8 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-6">
-            {% for year in years %}
-                {% if year == current_year %}
-                    <span>{{ year }}</span>
-                {% else %}
-                    <a href="/{{ year }}">{{ year }}</a>
-                {% endif %}
-            {% endfor %}
+            <span>Results</span>
+            <a href="/rules">Rules</a>
         </div>
         <div class="col-6 text-end">
             <span>Data retrieved at {{ timestamp }}</span>
@@ -33,7 +28,13 @@
             <th scope="col">Position</th>
             <th scope="col">Total stars</th>
             {% for day in days %}
-                <th scope="col">{{ day }}</th>
+                <th scope="col">
+                {% if day|int <= current_day %}
+                    <a href="https://adventofcode.com/{{current_year}}/day/{{day}}">{{ day }}</a>
+                {% else %}
+                    {{ day }}
+                {% endif %}
+                </th>
             {% endfor %}
             <th scope="col">Total time</th>
             <th scope="col">Average time</th>
@@ -46,13 +47,7 @@
             <td>{{ member.stars }}</td>
             {% for result in member.results %}
             <td
-                {% if result.gold_ts %}
-                    class="star gold" title="{{ result.str_time }}"
-                {% elif result.silver_ts %}
-                    class="star silver"
-                {% else %}
-                    class="star"
-                {% endif %}
+               class="star {{ 'gold' if result.gold_ts else 'silver' if result.silver_ts }}" title="{{ result.str_time }}"
             >*</td>
             {% endfor %}
             <td>{{ member.str_total_time }}</td>

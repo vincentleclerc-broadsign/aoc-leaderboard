@@ -1,0 +1,59 @@
+{
+    "event": "2022",
+    "timestamp": 123,
+    "members": {
+        "1337": {
+            "completion_day_level": {
+                "1": {
+                    "1": {
+                        "get_star_ts": 4,
+                        "star_index": 1
+                    },
+                    "2": {
+                        "get_star_ts": 1672549200,
+                        "star_index": 2
+                    }
+                },
+                "2": {
+                    "1": {
+                        "get_star_ts": 1672549201,
+                        "star_index": 3
+                    },
+                    "2": {
+                        "get_star_ts": 1672549202,
+                        "star_index": 4
+                    }
+                },
+                "3": {
+                    "1": {
+                        "get_star_ts": 1672549203,
+                        "star_index": 5
+                    }
+                },
+                "5": {
+                    "1": {
+                        "get_star_ts": 5,
+                        "star_index": 6
+                    }
+                },
+                "4": {
+                    "1": {
+                        "get_star_ts": 6,
+                        "star_index": 7
+                    },
+                    "2": {
+                        "get_star_ts": 7,
+                        "star_index": 8
+                    }
+                }
+
+            },
+            "global_score": 0,
+            "id": 1337,
+            "last_star_ts": 10,
+            "local_score": 0,
+            "name": "bob",
+            "stars": 2
+        }
+    }
+}
