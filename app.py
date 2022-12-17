@@ -241,7 +241,7 @@ def leaderboard(year: int) -> str:
 
 @app.route("/rules")
 def rules() -> str:
-    return render_template("rules.html")
+    return render_template("rules.html", current_year=sorted(list(BOARDS.keys()))[-1])
 
 
 @app.route("/robots.txt")
