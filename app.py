@@ -39,9 +39,9 @@ class Result:
 @dataclass(order=False)
 class Member:
     id: int
-    name: str
     results: List[Result] = field(default_factory=list)
     position: int = 0
+    name: str = None
 
     @property
     def stars(self) -> int:
@@ -184,6 +184,13 @@ def use_cached_json(
     except json.JSONDecodeError:
         pass
     return
+
+
+def get_session_cookie() -> dict:
+    with open("etc/config.json") as f:
+        config_file = f.read()
+        config = json.loads(config_file)
+        return config["session_cookie"]
 
 
 def fetch_json(year: int) -> dict:
