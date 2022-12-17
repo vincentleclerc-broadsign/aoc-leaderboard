@@ -1,8 +1,5 @@
 requests
 flask
-<<<<<<< HEAD
+pytz
 pytest
 pre-commit
-=======
-gunicorn
->>>>>>> 1d694714a56e56a85f8a3d7490949f48e5d8890c
