@@ -30,7 +30,7 @@
             {% for day in days %}
                 <th scope="col">
                 {% if day|int <= current_day %}
-                    <a href="https://adventofcode.com/{{current_year}}/day/{{day}}">{{ day }}</a>
+                    <a href="https://adventofcode.com/{{current_year}}/day/{{day | int}}">{{ day }}</a>
                 {% else %}
                     {{ day }}
                 {% endif %}
