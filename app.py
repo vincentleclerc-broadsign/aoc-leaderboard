@@ -1,3 +1,4 @@
+import logging.config
 import os
 import pytz
 import time
@@ -8,7 +9,9 @@ from typing import List, Self, Optional
 import requests
 from flask import Flask, render_template, send_from_directory, request, abort
 
+logger = logging.getLogger("root")
 app = Flask(__name__, template_folder="templates", static_folder="static")
+
 BOARDS = {2022: 1505617}
 SESSION_COOKIE = {"session": os.getenv("SESSION_COOKIE")}
 CACHE_FOLDER = "cache"
@@ -116,8 +119,6 @@ def contest_end(year: int) -> datetime:
 
 def is_contest_over(year: int, current_time: Optional[datetime] = None) -> bool:
     current_time = current_time or CURRENT_TIME
-    print(current_time.astimezone(tz=TIMEZONE))
-    print(contest_end(year).astimezone(tz=TIMEZONE))
     return current_time > contest_end(year)
 
 
@@ -127,7 +128,6 @@ def split_timestamp(timestamp: int | float) -> tuple:
     minutes = int((timestamp // 60) % 60)
     seconds = int(timestamp % 60)
     milliseconds = int(round((timestamp - (timestamp // 1)) * 1000))
-    print(f"{timestamp=} {timestamp // 1=} {timestamp - timestamp // 1}")
     return days, hours, minutes, seconds, milliseconds
 
 
@@ -214,8 +214,17 @@ def fetch_json(year: int) -> dict:
 
         return data
 
-    except Exception:
+    except Exception as e:
+        logging.error(e)
         return use_cached_json(year, forced=True)
+
+
+def start_logging():
+    if not os.path.exists("logging.conf"):
+        with open("template_logging.conf") as source, open("logging.conf", "w") as destination:
+            destination.write(source.read())
+    logging.config.fileConfig(fname="logging.conf", disable_existing_loggers=False)
+    logger.debug(f"Using cookie: {SESSION_COOKIE}")
 
 
 @app.route("/")
