@@ -204,7 +204,7 @@ def fetch_json(year: int) -> dict:
         response.raise_for_status()
 
         if response.headers["Content-Type"] != "application/json":
-            raise Exception("Unable to fetch standings from advent-of-code")
+            raise Exception(f"Unable to fetch standings from advent-of-code. {SESSION_COOKIE}")
 
         data = response.json()
         data["timestamp"] = time.time()
