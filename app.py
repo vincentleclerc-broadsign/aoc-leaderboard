@@ -16,7 +16,6 @@ BOARDS = {2022: 1505617}
 SESSION_COOKIE = {"session": os.getenv("SESSION_COOKIE")}
 CACHE_FOLDER = "cache"
 TIMEZONE = pytz.timezone("EST")
-CURRENT_TIME = datetime.now(tz=TIMEZONE)
 
 
 @dataclass(order=True)
@@ -117,8 +116,8 @@ def contest_end(year: int) -> datetime:
     )
 
 
-def is_contest_over(year: int, current_time: Optional[datetime] = None) -> bool:
-    current_time = current_time or CURRENT_TIME
+def is_contest_over(year: int, current_time: datetime = None) -> bool:
+    current_time = current_time or datetime.now(tz=TIMEZONE)
     return current_time > contest_end(year)
 
 
@@ -238,12 +237,13 @@ def leaderboard(year: int) -> str:
         abort(404)
     data = fetch_json(year)
     members = populate_members(data, year)
+    current_time = datetime.now(tz=TIMEZONE)
     return render_template(
         "index.html",
         members=members,
         days=[f"{i:02}" for i in range(1, 26)],
         current_year=year,
-        current_day=CURRENT_TIME.day if not is_contest_over(year) else 25,
+        current_day=current_time.day if not is_contest_over(year, current_time) else 25,
         timestamp=datetime.fromtimestamp(data["timestamp"], tz=TIMEZONE).strftime("%Y-%m-%d %H:%M:%S"),
     )
 
