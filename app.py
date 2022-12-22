@@ -155,8 +155,8 @@ def populate_members(data: dict, year: int) -> List[Member]:
                 timestamp = result[star[1]].get("get_star_ts", None)
                 if timestamp and timestamp <= contest_end(year).timestamp():
                     setattr(results[int(day) - 1], f"{star[0]}_ts", timestamp)
-
-        members.append(Member(id=member["id"], name=member["name"], results=sorted(results)))
+        name = member["name"] or f"User #{member['id']}"
+        members.append(Member(id=member["id"], name=name, results=sorted(results)))
 
     members.sort(reverse=True)
 
