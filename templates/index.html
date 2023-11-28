@@ -11,7 +11,13 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-6">
-            <span>Results</span>
+            {% for year in years %}
+                {% if year != current_year %}
+                    <a href="/{{ year }}">{{ year }}</a>
+                {% else %}
+                    <span>{{ year }}</span>
+                {% endif %}
+            {% endfor %}
             <a href="/rules">Rules</a>
         </div>
         <div class="col-6 text-end">
@@ -19,7 +25,7 @@
         </div>
     </div>
 </div>
-<h1 class="h1 text-center">Advent of Code {{ current_year }} <small class="text-muted">Broadsign leaderboard</small></h1>
+<h1 class="h1 text-center">Advent of Code {{ current_year }} <small class="text-muted">Leaderboard</small></h1>
 <br />
  <table class="table">
      <thead>

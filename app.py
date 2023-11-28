@@ -12,7 +12,7 @@ from flask import Flask, render_template, send_from_directory, request, abort
 logger = logging.getLogger("root")
 app = Flask(__name__, template_folder="templates", static_folder="static")
 
-BOARDS = {2022: 1505617}
+BOARDS = {2022: 1505617, 2023: 1505617}
 SESSION_COOKIE = {"session": os.getenv("SESSION_COOKIE")}
 CACHE_FOLDER = "cache"
 TIMEZONE = pytz.timezone("EST")
@@ -236,21 +236,29 @@ def leaderboard(year: int) -> str:
     if year not in BOARDS:
         abort(404)
     data = fetch_json(year)
-    members = populate_members(data, year)
     current_time = datetime.now(tz=TIMEZONE)
+
+    if data:
+        members = populate_members(data, year) if data else []
+        timestamp = datetime.fromtimestamp(data["timestamp"], tz=TIMEZONE).strftime("%Y-%m-%d %H:%M:%S")
+    else:
+        members = []
+        timestamp = ""
+
     return render_template(
         "index.html",
         members=members,
+        years=list(BOARDS.keys()),
         days=[f"{i:02}" for i in range(1, 26)],
         current_year=year,
         current_day=current_time.day if not is_contest_over(year, current_time) else 25,
-        timestamp=datetime.fromtimestamp(data["timestamp"], tz=TIMEZONE).strftime("%Y-%m-%d %H:%M:%S"),
+        timestamp=timestamp,
     )
 
 
 @app.route("/rules")
 def rules() -> str:
-    return render_template("rules.html", current_year=sorted(list(BOARDS.keys()))[-1])
+    return render_template("rules.html", years=list(BOARDS.keys()), current_year=sorted(list(BOARDS.keys()))[-1])
 
 
 @app.route("/robots.txt")
