@@ -12,7 +12,7 @@ from flask import Flask, render_template, send_from_directory, request, abort
 logger = logging.getLogger("root")
 app = Flask(__name__, template_folder="templates", static_folder="static")
 
-BOARDS = {2022: 1505617, 2023: 1505617}
+BOARDS = {2022: 1505617, 2023: 1505617, 2024: 1505617}
 SESSION_COOKIE = {"session": os.getenv("SESSION_COOKIE")}
 CACHE_FOLDER = "cache"
 TIMEZONE = pytz.timezone("EST")
