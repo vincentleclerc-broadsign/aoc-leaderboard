@@ -13,7 +13,6 @@ logger = logging.getLogger("root")
 app = Flask(__name__, template_folder="templates", static_folder="static")
 
 BOARDS = {2022: 1505617, 2023: 1505617, 2024: 1505617}
-SESSION_COOKIE = {"session": os.getenv("SESSION_COOKIE")}
 CACHE_FOLDER = "cache"
 TIMEZONE = pytz.timezone("EST")
 
@@ -185,25 +184,25 @@ def use_cached_json(
     return
 
 
-def get_session_cookie() -> dict:
-    with open("etc/config.json") as f:
-        config_file = f.read()
-        config = json.loads(config_file)
-        return config["session_cookie"]
-
-
 def fetch_json(year: int) -> dict:
     cached_data = use_cached_json(year)
     if cached_data:
         return cached_data
 
     try:
+        with open("cookie") as f:
+            value = f.read().strip()
+
+        if value == "":
+            raise ValueError("Session cookie is empty.")
+
+        session_cookie = {"session": value}
         url = f"https://adventofcode.com/{year}/leaderboard/private/view/{BOARDS[year]}.json"
-        response = requests.get(url=url, cookies=SESSION_COOKIE)
+        response = requests.get(url=url, cookies=session_cookie)
         response.raise_for_status()
 
         if response.headers["Content-Type"] != "application/json":
-            raise Exception(f"Unable to fetch standings from advent-of-code. {SESSION_COOKIE}")
+            raise Exception(f"Unable to fetch standings from advent-of-code. {session_cookie}")
 
         data = response.json()
         data["timestamp"] = time.time()
@@ -223,7 +222,6 @@ def start_logging():
         with open("template_logging.conf") as source, open("logging.conf", "w") as destination:
             destination.write(source.read())
     logging.config.fileConfig(fname="logging.conf", disable_existing_loggers=False)
-    logger.debug(f"Using cookie: {SESSION_COOKIE}")
 
 
 @app.route("/")
