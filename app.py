@@ -12,7 +12,7 @@ from flask import Flask, render_template, send_from_directory, request, abort
 logger = logging.getLogger("root")
 app = Flask(__name__, template_folder="templates", static_folder="static")
 
-BOARDS = {2022: 1505617, 2023: 1505617, 2024: 1505617}
+BOARDS = {2022: 1505617, 2023: 1505617, 2024: 1505617, 2025: 1505617}
 CACHE_FOLDER = "cache"
 TIMEZONE = pytz.timezone("EST")
 
@@ -24,9 +24,10 @@ class Result:
     gold_ts: Optional[int] = None
 
     @property
-    def delta(self) -> int:
+    def delta(self) -> int | None:
         if self.gold_ts:
             return self.gold_ts - self.silver_ts
+        return None
 
     @property
     def str_time(self) -> str:
@@ -224,6 +225,16 @@ def start_logging():
     logging.config.fileConfig(fname="logging.conf", disable_existing_loggers=False)
 
 
+def current_day(current_time: datetime, year: int, n_days: int) -> int:
+    if current_time.timestamp() < datetime(year=year, month=12, day=1).timestamp():
+        return 0
+    if is_contest_over(year, current_time):
+        return n_days
+    if n_days == 25:
+        return current_time.day
+    else:
+        return (current_time.day + 1) // 2
+
 @app.route("/")
 def current_leaderboard() -> str:
     return leaderboard(sorted(list(BOARDS.keys()))[-1])
@@ -243,13 +254,15 @@ def leaderboard(year: int) -> str:
         members = []
         timestamp = ""
 
+    n_days = 12 if year == 2025 else 25
+
     return render_template(
         "index.html",
         members=members,
         years=list(BOARDS.keys()),
-        days=[f"{i:02}" for i in range(1, 26)],
+        days=[f"{i:02}" for i in range(1, n_days + 1)],
         current_year=year,
-        current_day=current_time.day if not is_contest_over(year, current_time) else 25,
+        current_day=current_day(current_time, year, n_days),
         timestamp=timestamp,
     )
 
